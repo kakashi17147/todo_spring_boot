@@ -9,11 +9,18 @@
 <div>
     <h1 style="text-align:center">TODO MANAGER</h1>
 
+     <div> <td>Welcome <h2 th:text="${userObj.getUsername()}" > </h2></td></div>
+
     <tr>
-        <div align = "left" >
+        <div align = "left">
 
-                 <h3><a  th:href="@{'/new'}">Add new</a></h3>
+                <!--<h3><a  th:href="@{'/new'}">Add new</a></h3>-->
+                 <a th:href="@{'/new/' + ${userObj.getUser_id()}}">Add new Task</a>
 
+        </div>
+
+        <div align="right">
+            <a th:href="@{'/'}">Logout</a>
         </div>
 
     </tr>
@@ -50,8 +57,7 @@
 
     </tr>
 
-    </tbody>
-    </table>
-    <div>
+
+    </div>
 </body>
 </html>

@@ -2,6 +2,7 @@ package come.try3.demo.controller;
 
 
 import come.try3.demo.domain.ToDo;
+import come.try3.demo.domain.UserLogin;
 import come.try3.demo.repo.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,27 +18,38 @@ public class ToDoController {
        @Autowired
        private ToDoRepository repo;
 
-       @RequestMapping({"/home","/"})
+       private int user_id=0 ;
+
+       @RequestMapping({"/home"})
        public String home(Model model)
        {
-           List<ToDo> ListToDo = repo.findAll();
+           //List<ToDo> ListToDo = repo.findAll();
+           List<ToDo> ListToDo = repo.findByUid(user_id);
            model.addAttribute("ListToDo",ListToDo);
 
-           System.out.println("in get all ...");
-           return "home";
+           System.out.println(" IN ListTodDo ........");
+           return "alltask";
        }
 
-    @GetMapping("/new")
-    public String add(Model model) {
-        model.addAttribute("todo", new ToDo());
+    @GetMapping("/new/{uid}")
+    public String add(@PathVariable(name = "uid") int uid,Model model) {
 
+        ToDo todo = new ToDo();
+        todo.setUid(uid);
+        user_id = uid;
+        //System.out.println(todo.toString());
+        model.addAttribute("todo", todo);
         return "new";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String SaveTask(@ModelAttribute("todo") ToDo obj) {
+    @RequestMapping(value = "/save/{uid}", method = RequestMethod.POST)
+    public String SaveTask(@ModelAttribute("todo") ToDo obj,@PathVariable(name = "uid") int uid) {
+
+        obj.setUid(uid);
+        System.out.println(obj.toString());
         repo.save(obj);
-        return "redirect:/";
+
+        return "redirect:/home";
     }
 
     @RequestMapping("/edit/{tid}")
@@ -51,7 +63,7 @@ public class ToDoController {
     @RequestMapping("/delete/{tid}")
     public String deleteEmployeePage(@PathVariable(name = "tid") int tid) {
         repo.deleteById(tid);
-        return "redirect:/";
+        return "redirect:/home";
     }
 
 
